@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useMatch } from 'react-router-dom'
 import Home from './pages/student/Home'
 import CoursesList from './pages/student/CoursesList'
 import CourseDetails from './pages/student/CourseDetails'
@@ -13,10 +13,14 @@ import MyCourses from './pages/educator/MyCourses'
 import StudentsEnrolled from './pages/educator/StudentsEnrolled'
 import StudentLayout from './pages/student/StudentLayout'
 import "quill/dist/quill.snow.css";
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
+
+  const isEducatorRoute=useMatch('/educator/*')
   return (
     <div>
+      <ToastContainer/>
       <Routes>
         <Route element={<StudentLayout />}>
         <Route path='/' element={<Home />}/>
