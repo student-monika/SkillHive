@@ -76,6 +76,26 @@ const CourseDetails = () => {
     ))
   }
 
+  // Function to handle YouTube video links
+  const extractYouTubeVideoId = (url) => {
+  if (!url) return null;
+  
+  // Handle different YouTube URL formats
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  
+  if (match && match[7] && match[7].length === 11) {
+    return match[7];
+  }
+  
+  // Fallback for youtu.be links
+  if (url.includes('youtu.be/')) {
+    return url.split('youtu.be/')[1].split('?')[0];
+  }
+  
+  return null;
+};
+
   return courseData ? (
     <>
     <div className='flex md:flex-row flex-col-reverse gap-10 relative items-start justify-between md:px-36 px-8 md:pt-20 pt-20 text-left'>
@@ -121,7 +141,7 @@ const CourseDetails = () => {
                           <p>{lecture.lectureTitle}</p>
                           <div className='flex gap-2'>
                             {lecture.isPreviewFree && <p onClick={()=> setPlayerData({
-                              videoId: lecture.lectureUrl.split('/').pop()
+                              videoId: lecture.lectureUrl
                             })} 
                             className='text-blue-500 cursor-pointer'>Preview</p>}
                             <p>{humanizeDuration(lecture.lectureDuration*60*1000,{units:['h','m']})}</p>
@@ -146,7 +166,7 @@ const CourseDetails = () => {
       <div className='max-w-[424px] z-10 shadow-[0px_4px_15px_2px_rgba(0,0,0,0.1)] rounded-t md:rounded-none overflow-hidden bg-white min-w-[300px] sm:min-w-[420px]'> 
         {
               playerData ? 
-            <YouTube videoId={playerData.videoId} opts={{playerVars:{autoplay:1}}} iframeClassName='w-full aspect-video'/>
+            <YouTube videoId={extractYouTubeVideoId(playerData.videoId)} opts={{playerVars:{autoplay:1}}} iframeClassName='w-full aspect-video'/>
             :<img src={courseData.courseThumbnail}/>
             }
         <div className='p-5'>

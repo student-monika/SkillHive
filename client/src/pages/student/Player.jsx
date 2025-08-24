@@ -99,6 +99,26 @@ const Player = () => {
     getCourseProgress()
   },[])
 
+  // Function to handle YouTube video links
+  const extractYouTubeVideoId = (url) => {
+  if (!url) return null;
+  
+  // Handle different YouTube URL formats
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  
+  if (match && match[7] && match[7].length === 11) {
+    return match[7];
+  }
+  
+  // Fallback for youtu.be links
+  if (url.includes('youtu.be/')) {
+    return url.split('youtu.be/')[1].split('?')[0];
+  }
+  
+  return null;
+};
+
   return courseData ? (
     <>
     <div className='p-4 sm:p-10 flex flex-col-reverse md:grid md:grid-cols-2 gap-10 md:px-36'>
@@ -149,7 +169,7 @@ const Player = () => {
       <div className='md:mt-10'>
         {playerData ? (
           <div>
-            <YouTube videoId={playerData.lectureUrl.split('/').pop()} iframeClassName='w-full aspect-video'/>
+            <YouTube videoId={extractYouTubeVideoId(playerData.lectureUrl)} iframeClassName='w-full aspect-video'/>
             <div className='flex justify-between items-center mt-1'>
               <p>{playerData.chapter}.{playerData.lecture} - {playerData.lectureTitle}</p>
               <button onClick={()=>markLectureAsCompleted(playerData.lectureId)} className='text-blue-600'>{progressData && progressData.lectureCompleted.includes(playerData.lectureId) ? 'Completed':'Mark Complete'}</button>
