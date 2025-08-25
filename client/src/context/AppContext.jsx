@@ -117,7 +117,8 @@ export const AppContextProvider=(props)=>{
             const {data}=await axios.get(backendUrl+'/api/user/enrolled-courses',{headers:{Authorization:`Bearer ${token}`}})
 
             if(data.success){
-                setEnrolledCourses(data.enrolledCourses.reverse())
+                const courses=data.enrolledCourses || []
+                setEnrolledCourses(courses.reverse())
             }
             else{
                 toast.error(data.message)
@@ -128,8 +129,7 @@ export const AppContextProvider=(props)=>{
     }
 
     useEffect(()=>{
-        fetchAllCourses(),
-        fetchUserEnrolledCourses()
+        fetchAllCourses()
     },[])
 
 
